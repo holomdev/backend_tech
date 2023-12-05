@@ -98,7 +98,7 @@ describe('AuthenticationService', () => {
 
         const promise = service.signUp(signUpDto);
 
-        await expect(promise).rejects.toThrowError();
+        await expect(promise).rejects.toThrow();
       });
     });
   });
