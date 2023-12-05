@@ -17,7 +17,7 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
     .setTitle('Technical test')
-    .setDescription('Sample application for technical test')
+    .setDescription('Technical test API description')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
