@@ -27,10 +27,11 @@ export class AuthenticationService {
 
   async signUp(signUpDto: SignUpDto) {
     try {
-      const user = this.userRepository.create({
-        ...signUpDto,
-        password: await this.hashingService.hash(signUpDto.password),
-      });
+      const user = new User();
+      user.email = signUpDto.email;
+      user.name = signUpDto.name;
+      user.username = signUpDto.username;
+      user.password = await this.hashingService.hash(signUpDto.password);
       await this.userRepository.save(user);
     } catch (err) {
       if (err.code === '23505') {
