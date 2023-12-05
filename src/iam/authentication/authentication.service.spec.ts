@@ -5,10 +5,11 @@ import { Repository } from 'typeorm';
 import { HashingService } from '../hashing/hashing.service';
 import { User } from '../../users/entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { SignUpDto } from './dto/sign-up.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import jwtConfig from '../config/jwt.config';
+import { SignUpDto } from './dto/sign-up.dto';
+import { SignInDto } from './dto/sign-in.dto';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 const createMockRepository = <T = any>(): MockRepository<T> => ({
@@ -22,6 +23,17 @@ const signUpDto: SignUpDto = {
   username: 'username_test',
   password: 'password123',
 };
+
+const signInDto: SignInDto = {
+  email: 'test@example.com',
+  password: 'password123',
+};
+
+const user = {
+  id: 1,
+  email: 'test@example.com',
+  password: 'some_hashing_password',
+} as User;
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
@@ -87,6 +99,32 @@ describe('AuthenticationService', () => {
         const promise = service.signUp(signUpDto);
 
         await expect(promise).rejects.toThrowError();
+      });
+    });
+  });
+
+  describe('signIn', () => {
+    it('should a user signin', async () => {
+      const accessToken = 'access123';
+      userRepository.findOneBy.mockResolvedValueOnce(user);
+      jest.spyOn(hashingService, 'compare').mockResolvedValueOnce(true);
+      jest.spyOn(jwtService, 'signAsync').mockResolvedValueOnce(accessToken);
+
+      const result = await service.signIn(signInDto);
+
+      expect(userRepository.findOneBy).toHaveBeenCalledWith({
+        email: signInDto.email,
+      });
+      expect(userRepository.findOneBy).toHaveBeenCalledTimes(1);
+
+      expect(hashingService.compare).toHaveBeenCalledWith(
+        signInDto.password,
+        user.password,
+      );
+      expect(hashingService.compare).toHaveBeenCalledTimes(1);
+
+      expect(result).toEqual({
+        accessToken,
       });
     });
   });
