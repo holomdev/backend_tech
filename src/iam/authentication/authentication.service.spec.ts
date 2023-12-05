@@ -79,5 +79,15 @@ describe('AuthenticationService', () => {
       expect(userRepository.save).toHaveBeenCalledTimes(1);
       expect(result).toBeUndefined();
     });
+
+    describe('otherwise', () => {
+      it('should throw a Error', async () => {
+        userRepository.save.mockRejectedValueOnce(new Error());
+
+        const promise = service.signUp(signUpDto);
+
+        await expect(promise).rejects.toThrowError();
+      });
+    });
   });
 });
