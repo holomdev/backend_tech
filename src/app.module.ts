@@ -20,7 +20,7 @@ import { UsersModule } from './users/users.module';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV === 'test' ? true : false,
+      synchronize: ['test', 'local'].includes(process.env.NODE_ENV),
     }),
     IamModule,
     UsersModule,
