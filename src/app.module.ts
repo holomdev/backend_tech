@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IamModule } from './iam/iam.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { IamModule } from './iam/iam.module';
       synchronize: process.env.NODE_ENV === 'test' ? true : false,
     }),
     IamModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
