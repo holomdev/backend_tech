@@ -3,6 +3,7 @@ import {
   Injectable,
   ConflictException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,7 +26,7 @@ export class BrandsService {
       if (err.code === '23505') {
         throw new ConflictException();
       }
-      throw err;
+      throw new InternalServerErrorException();
     }
   }
 
@@ -37,8 +38,19 @@ export class BrandsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
+  async findOne(id: number) {
+    try {
+      const brand = await this.brandRepository.findOne({ where: { id } });
+      if (!brand) {
+        throw new NotFoundException(`Brand #${id} not found`);
+      }
+      return brand;
+    } catch (err) {
+      if (err instanceof NotFoundException) {
+        throw err;
+      }
+      throw new InternalServerErrorException();
+    }
   }
 
   update(id: number, updateBrandDto: UpdateBrandDto) {
