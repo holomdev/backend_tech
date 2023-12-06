@@ -3,6 +3,7 @@ import { INestApplication, ValidationPipe, HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto';
+import { SignInDto } from '../../src/iam/authentication/dto/sign-in.dto';
 
 describe('[Feature] Authentication - /authentication (e2e)', () => {
   let app: INestApplication;
@@ -95,6 +96,23 @@ describe('[Feature] Authentication - /authentication (e2e)', () => {
         });
         expect(HttpStatus.BAD_REQUEST);
       });
+  });
+
+  it('sign-in [POST /]: should return accessToken for correct username and password', async () => {
+    const credentials: SignInDto = {
+      email: 'test@example.com',
+      password: 'password123',
+    };
+    const response = await request(app.getHttpServer())
+      .post('/authentication/sign-in')
+      .send(credentials)
+      .expect(HttpStatus.OK);
+
+    const jwtToken = response.body.accessToken;
+
+    expect(jwtToken).toMatch(
+      /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/,
+    );
   });
 
   afterAll(async () => {
