@@ -115,6 +115,23 @@ describe('[Feature] Authentication - /authentication (e2e)', () => {
     );
   });
 
+  it('sign-in [POST /]: should throw an error for bad email', async () => {
+    return await request(app.getHttpServer())
+      .post('/authentication/sign-in')
+      .send({
+        email: 'bademail.com',
+        password: 'Password123',
+      })
+      .then(({ body }) => {
+        expect(body).toEqual({
+          message: ['email must be an email'],
+          error: 'Bad Request',
+          statusCode: 400,
+        });
+        expect(HttpStatus.BAD_REQUEST);
+      });
+  });
+
   afterAll(async () => {
     await app.close();
   });
