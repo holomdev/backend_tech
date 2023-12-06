@@ -149,6 +149,23 @@ describe('[Feature] Authentication - /authentication (e2e)', () => {
       });
   });
 
+  it('sign-in [POST /]: should throw an error for incorrect password', async () => {
+    return await request(app.getHttpServer())
+      .post('/authentication/sign-in')
+      .send({
+        email: 'test@example.com',
+        password: 'Password1234',
+      })
+      .then(({ body }) => {
+        expect(body).toEqual({
+          message: 'Password does not match',
+          error: 'Unauthorized',
+          statusCode: 401,
+        });
+        expect(HttpStatus.UNAUTHORIZED);
+      });
+  });
+
   afterAll(async () => {
     await app.close();
   });
