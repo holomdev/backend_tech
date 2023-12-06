@@ -74,7 +74,15 @@ export class BrandsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  async remove(id: number) {
+    try {
+      const brand = await this.findOne(id);
+      await this.brandRepository.remove(brand);
+    } catch (err) {
+      if (err instanceof NotFoundException) {
+        throw err;
+      }
+      throw new InternalServerErrorException();
+    }
   }
 }
