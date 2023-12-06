@@ -53,8 +53,25 @@ export class BrandsService {
     }
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async update(id: number, updateBrandDto: UpdateBrandDto) {
+    try {
+      const brand = await this.brandRepository.preload({
+        id,
+        ...updateBrandDto,
+      });
+      if (!brand) {
+        throw new NotFoundException(`Brand #${id} not found`);
+      }
+      return await this.brandRepository.save(brand);
+    } catch (err) {
+      if (err.code === '23505') {
+        throw new ConflictException();
+      }
+      if (err instanceof NotFoundException) {
+        throw err;
+      }
+      throw new InternalServerErrorException();
+    }
   }
 
   remove(id: number) {
