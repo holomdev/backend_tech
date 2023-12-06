@@ -38,6 +38,25 @@ describe('[Feature] Authentication - /authentication (e2e)', () => {
       .expect(HttpStatus.CREATED);
   });
 
+  it('sign-up [POST /]: should throw an error for a duplicate email', async () => {
+    const user: SignUpDto = {
+      name: 'test_name',
+      email: 'test@example.com',
+      username: 'username_test',
+      password: 'password123',
+    };
+    return await request(app.getHttpServer())
+      .post('/authentication/sign-up')
+      .send(user)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          message: 'Conflict',
+          statusCode: 409,
+        });
+        expect(HttpStatus.CONFLICT);
+      });
+  });
+
   afterAll(async () => {
     await app.close();
   });
