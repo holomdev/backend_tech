@@ -132,6 +132,23 @@ describe('[Feature] Authentication - /authentication (e2e)', () => {
       });
   });
 
+  it('sign-in [POST /]: should throw an error for non-existent user', async () => {
+    return await request(app.getHttpServer())
+      .post('/authentication/sign-in')
+      .send({
+        email: 'another_uer@email.com',
+        password: 'Password123',
+      })
+      .then(({ body }) => {
+        expect(body).toEqual({
+          message: 'User does not exists',
+          error: 'Unauthorized',
+          statusCode: 401,
+        });
+        expect(HttpStatus.UNAUTHORIZED);
+      });
+  });
+
   afterAll(async () => {
     await app.close();
   });
