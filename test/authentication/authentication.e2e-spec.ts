@@ -77,6 +77,26 @@ describe('[Feature] Authentication - /authentication (e2e)', () => {
       });
   });
 
+  it('sign-up [POST /]: should throw an error for a bad password', async () => {
+    const user: SignUpDto = {
+      name: 'test_name',
+      email: 'test@example.com',
+      username: 'username_test',
+      password: '',
+    };
+    return await request(app.getHttpServer())
+      .post('/authentication/sign-up')
+      .send(user)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          message: ['password must be longer than or equal to 10 characters'],
+          error: 'Bad Request',
+          statusCode: 400,
+        });
+        expect(HttpStatus.BAD_REQUEST);
+      });
+  });
+
   afterAll(async () => {
     await app.close();
   });
