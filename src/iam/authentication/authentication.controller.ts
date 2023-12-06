@@ -1,4 +1,4 @@
-import { Body, Controller, Post, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Post, HttpStatus, HttpCode } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
@@ -33,6 +33,7 @@ export class AuthenticationController {
     description: 'The user does not exist or the password does not match.',
   })
   @Post('sign-in')
+  @HttpCode(HttpStatus.OK)
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto);
   }
