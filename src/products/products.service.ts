@@ -29,8 +29,8 @@ export class ProductsService {
     return await this.productsRepository.save(newProduct);
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll() {
+    return await this.productsRepository.find({ relations: ['brand'] });
   }
 
   findOne(id: number) {
