@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -44,11 +43,35 @@ export class ProductsService {
     return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const product = await this.productsRepository.findOne({
+      where: { id: id },
+    });
+    if (!product) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
+    if (updateProductDto.brandId) {
+      const brand = await this.brandsService.findOne(updateProductDto.brandId);
+      if (!brand) {
+        throw new NotFoundException(
+          `Brand with id ${updateProductDto.brandId} not found`,
+        );
+      }
+      product.brand = brand;
+    }
+    if (updateProductDto.name) {
+      product.name = updateProductDto.name;
+    }
+    return await this.productsRepository.save(product);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+    const product = await this.productsRepository.findOne({
+      where: { id: id },
+    });
+    if (!product) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
+    return await this.productsRepository.remove(product);
   }
 }
