@@ -1,8 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateProductDto } from './create-product.dto';
-import { IsOptional, IsString } from 'class-validator';
-import { Brand } from '../../brands/entities/brand.entity';
-import { Type } from 'class-transformer';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
   @ApiProperty({ description: 'The new name of the product' })
@@ -10,11 +8,8 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
   @IsString()
   name: string;
 
-  @ApiProperty({
-    description: 'The new brand of the product',
-    type: () => Brand,
-  })
-  @Type(() => Brand)
+  @ApiProperty({ description: 'The new id of the brand of the product' })
   @IsOptional()
-  brand: Brand;
+  @IsNumber()
+  brandId: number;
 }
