@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -25,11 +26,11 @@ export class ProductsController {
 
   @ApiOperation({ summary: 'Create product' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'The product has been successfully created.',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'Brand not found.',
   })
   @Post()
@@ -38,7 +39,7 @@ export class ProductsController {
   }
 
   @ApiOperation({ summary: 'Get all products' })
-  @ApiResponse({ status: 200, description: 'Return all products' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return all products' })
   @Get()
   findAll() {
     return this.productsService.findAll();
@@ -46,11 +47,11 @@ export class ProductsController {
 
   @ApiOperation({ summary: 'Get product by id' })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'Product not found.',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return the product with the corresponding id',
   })
   @Get(':id')
@@ -60,12 +61,12 @@ export class ProductsController {
 
   @ApiOperation({ summary: 'Update product' })
   @ApiResponse({
-    status: 404,
-    description: 'Product or brand not found.',
+    status: HttpStatus.OK,
+    description: 'The product has been successfully updated.',
   })
   @ApiResponse({
-    status: 200,
-    description: 'The product has been successfully updated.',
+    status: HttpStatus.NOT_FOUND,
+    description: 'Product or brand not found.',
   })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
@@ -74,11 +75,11 @@ export class ProductsController {
 
   @ApiOperation({ summary: 'Delete product' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'The product has been successfully deleted.',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'Product not found.',
   })
   @Delete(':id')
