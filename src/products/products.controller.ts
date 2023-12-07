@@ -28,6 +28,10 @@ export class ProductsController {
     status: 201,
     description: 'The product has been successfully created.',
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Brand not found.',
+  })
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
@@ -42,6 +46,10 @@ export class ProductsController {
 
   @ApiOperation({ summary: 'Get product by id' })
   @ApiResponse({
+    status: 404,
+    description: 'Product not found.',
+  })
+  @ApiResponse({
     status: 200,
     description: 'Return the product with the corresponding id',
   })
@@ -51,6 +59,10 @@ export class ProductsController {
   }
 
   @ApiOperation({ summary: 'Update product' })
+  @ApiResponse({
+    status: 404,
+    description: 'Product or brand not found.',
+  })
   @ApiResponse({
     status: 200,
     description: 'The product has been successfully updated.',
@@ -64,6 +76,10 @@ export class ProductsController {
   @ApiResponse({
     status: 200,
     description: 'The product has been successfully deleted.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Product not found.',
   })
   @Delete(':id')
   remove(@Param('id') id: string) {
